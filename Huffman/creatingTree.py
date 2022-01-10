@@ -17,15 +17,6 @@ def printNodes(node, val=''):
     if (not node.left and not node.right):
         print(f"{node.symbol} -> {newVal}")
 
-#def printEncodedMessageKey(node,  val=''):
-#    newVal = val + str(node.huff)
-#    if (node.left):
-#        printEncodedMessageKey(node.left, newVal)
-#    if (node.right):
-#        printEncodedMessageKey(node.right, newVal)
-#    if (not node.left and not node.right):
-#        print(f"{newVal}", end='')
-
 def getEncodedMessageKeyToFile(node,filename, val=''):
     file = open(filename,"a")
     newVal = val + str(node.huff)
@@ -46,7 +37,9 @@ def getEncodedMessageKeyToDictionary(node, dictionary, val=''):
         dictionary[str(node.symbol)] = str(newVal)
 
 chars = getting_keys(count_frequency(readtxt('data.txt')))
+print(chars)
 freq = getting_values(count_frequency(readtxt('data.txt')))
+print(freq)
 nodes = []
 
 for x in range(len(chars)):
