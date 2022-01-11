@@ -1,4 +1,5 @@
 #import operator
+import sys
 from Huffman.creatingTree import *
 
 #print(f'Match: {operator.eq(outbytes, inbytes)}')
@@ -24,39 +25,57 @@ def segregateIntoBytes():
     result.insert(0,bitsToIgnoreInbin)
     numOfkeys = len(dictorany.keys())
     numOfkeysBin = decimalToBinary(numOfkeys)
+    if len(numOfkeysBin) < 8:
+        while len(numOfkeysBin) < 8:
+            numOfkeysBin = "0" + numOfkeysBin
     result.insert(1,numOfkeysBin)
     all_values = freq
     max_value = max(all_values)
     max_value_bin = decimalToBinary(max_value)
-    max_value_bin_len = (len(max_value_bin))
-    max_value_bin_len = decimalToBinary(max_value_bin_len)
-    #if len(max_value_bin)>8:
-    #    splitNumbers = []
-    #    timesDevided = len(max_value_bin) / 8
-    #    timesDevided = round(timesDevided)
-    #    if(len(max_value_bin)%2==0):
-    #        for i in range(timesDevided):
-    #            splitNumbers.append(max_value/timesDevided)
-    #        timesDevidedBin = decimalToBinary(timesDevided)
-    #    else:
-    result.insert(2, max_value_bin_len)
-    i = 2
+    if len(max_value_bin) <= 8:
+        numberOfBytesOfValue = 1
+        numberOfBytesOfValue = decimalToBinary(numberOfBytesOfValue)
+        while len(numberOfBytesOfValue) < 8:
+            numberOfBytesOfValue = "0" + numberOfBytesOfValue
+        result.insert(2, numberOfBytesOfValue)
     dictionary2 = dict(zip(chars, freq))
+    if len(max_value_bin) > 8:
+        if len(max_value_bin)%8 != 0:
+            while len(max_value_bin)%8 != 0:
+                max_value_bin = "0" + max_value_bin
+
+        listOfBytesOfFreq = []
+        for i in range(0, len(max_value_bin), 8):
+            listOfBytesOfFreq.append(max_value_bin[i: i + 8])
+        numberOfBytesOfValue = decimalToBinary(len(listOfBytesOfFreq))
+        if len(numberOfBytesOfValue) < 8:
+            while len(numberOfBytesOfValue) < 8:
+                numberOfBytesOfValue = "0" + numberOfBytesOfValue
+        if len(numberOfBytesOfValue )>8:
+            print("za duży plik")
+            sys.exit()
+        result.insert(2, numberOfBytesOfValue)
+    i = 2
 
     for key in dictionary2.keys():
+        listOfBytesOfFreqVlue = []
+        value = decimalToBinary(dictionary2[key])
         asciiNumebr = (ord(key))
         i = i + 1
         lengthOfAscii = len(str(decimalToBinary(asciiNumebr)))
         if lengthOfAscii < 8:
             zerosToAdd = 8 - lengthOfAscii
             result.insert(i, (zerosToAdd * "0" + str(decimalToBinary(asciiNumebr))))
-
-        value = decimalToBinary(dictionary2[key])
         if len(value) < len(max_value_bin):
-            while len(value) != len(max_value_bin):
+            while len(value) < len(max_value_bin):
                 value = "0" + value
-        result.insert(i+1, value)
-        i = i+1
+        if len(value) > 8:
+            for b in range(0, len(value), 8):
+                result.insert(i+1, value[b: b + 8])
+                i = i + 1
+        if len(value) == 8:
+            result.insert(i+1, value)
+            i = i + 1
     print(result)
     return result
 
